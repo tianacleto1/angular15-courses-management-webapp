@@ -22,7 +22,27 @@ export class CoursesService {
       );
   }
 
+  getById(id: string) {
+    return this.httpClient.get<Course>(`${this.API_PATH}/${id}`)
+  }
+
   save(record: Partial<Course>) {
+    if (record._id) {
+      return this.update(record);
+    }
+
+    return this.create(record);
+  }
+
+  remove(id: string) {
+    return this.httpClient.delete(`${this.API_PATH}/${id}`).pipe(first());
+  }
+
+  private create(record: Partial<Course>) {
     return this.httpClient.post<Course>(this.API_PATH, record).pipe(first());
+  }
+
+  private update(record: Partial<Course>) {
+    return this.httpClient.put<Course>(`${this.API_PATH}/${record._id}`, record).pipe(first());
   }
 }
